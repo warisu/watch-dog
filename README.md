@@ -1,4 +1,4 @@
-# Sentinel Web
+# Watch Dog
 
 A Next.js dashboard for the Sentinel smart-contract watchdog, scaffolded to deploy on Vercel.
 
