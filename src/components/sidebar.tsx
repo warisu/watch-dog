@@ -28,7 +28,7 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="mt-auto px-2 pt-6 text-xs text-ink-500 font-mono">
-        v0.1.0 · watchdog scaffold
+        v0.1.0 · watchdog 2026
       </div>
     </aside>
   );
