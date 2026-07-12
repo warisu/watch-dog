@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Severity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum Chain {
+  STELLAR
+  ETHEREUM
+  POLYGON
+  BASE
+  ARBITRUM
+  OPTIMISM
+}
+
+model Watchlist {
+  id          String   @id @default(cuid())
+  label       String
+  chain       Chain
+  address     String
+  notes       String?
+  createdAt   DateTime @default(now())
+  rules       Rule[]
+  alerts      Alert[]
+
+  @@index([chain, address])
+}
+
+model Rule {
+  id           String     @id @default(cuid())
+  name         String
+  signature    String     // e.g. function selector or pattern name, see lib/scanners/signatures.ts
+  severity     Severity   @default(WARNING)
+  enabled      Boolean    @default(true)
+  watchlist    Watchlist? @relation(fields: [watchlistId], references: [id])
+  watchlistId  String?
+  createdAt    DateTime   @default(now())
+}
+
+model Alert {
+  id           String     @id @default(cuid())
+  chain        Chain
+  txHash       String
+  contract     String
+  signature    String
+  severity     Severity
+  summary      String
+  raw          Json?
+  acknowledged Boolean    @default(false)
+  watchlist    Watchlist? @relation(fields: [watchlistId], references: [id])
+  watchlistId  String?
+  createdAt    DateTime   @default(now())
+
+  @@index([createdAt])
+  @@index([severity])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actor     String
+  action    String
+  detail    Json?
+  createdAt DateTime @default(now())
+}
